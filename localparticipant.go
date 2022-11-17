@@ -69,6 +69,7 @@ func (p *LocalParticipant) PublishTrack(track webrtc.TrackLocal, opts *TrackPubl
 		Height:     uint32(opts.VideoHeight),
 		DisableDtx: opts.DisableDTX,
 		Stereo:     opts.Stereo,
+		DisableRed: opts.DisableRED,
 	}
 	if kind == TrackKindVideo {
 		// single layer
