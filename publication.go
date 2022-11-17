@@ -377,4 +377,5 @@ type TrackPublicationOptions struct {
 	// Opus only
 	DisableDTX bool
 	Stereo     bool
+	DisableRED bool
 }
