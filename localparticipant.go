@@ -78,6 +78,7 @@ func (p *LocalParticipant) PublishTrack(track webrtc.TrackLocal, opts *TrackPubl
 		Stereo:     opts.Stereo,
 		Stream:     opts.Stream,
 		Encryption: opts.Encryption,
+		DisableRed: opts.DisableRED,
 	}
 	if kind == TrackKindVideo {
 		// single layer
