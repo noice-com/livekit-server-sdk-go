@@ -418,4 +418,5 @@ type TrackPublicationOptions struct {
 	Stream string
 	// encryption type
 	Encryption livekit.Encryption_Type
+	DisableRED bool
 }
