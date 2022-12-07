@@ -62,4 +62,5 @@ type TrackLocal interface {
 
 	Codec() webrtc.RTPCodecCapability
 	VideoLayer() *livekit.VideoLayer
+	SetTransceiver(transceiver *webrtc.RTPTransceiver)
 }
