@@ -56,3 +56,10 @@ func (k TrackKind) ProtoType() livekit.TrackType {
 func KindFromRTPType(rt webrtc.RTPCodecType) TrackKind {
 	return TrackKind(rt.String())
 }
+
+type TrackLocal interface {
+	webrtc.TrackLocal
+
+	Codec() webrtc.RTPCodecCapability
+	VideoLayer() *livekit.VideoLayer
+}

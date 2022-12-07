@@ -260,7 +260,7 @@ type LocalTrackPublication struct {
 	trackPublicationBase
 	sender *webrtc.RTPSender
 	// set for simulcasted tracks
-	simulcastTracks map[livekit.VideoQuality]*LocalTrack
+	simulcastTracks map[livekit.VideoQuality]TrackLocal
 	opts            TrackPublicationOptions
 	onMuteChanged   func(*LocalTrackPublication, bool)
 }
@@ -291,7 +291,7 @@ func (p *LocalTrackPublication) TrackLocal() webrtc.TrackLocal {
 	return nil
 }
 
-func (p *LocalTrackPublication) GetSimulcastTrack(quality livekit.VideoQuality) *LocalTrack {
+func (p *LocalTrackPublication) GetSimulcastTrack(quality livekit.VideoQuality) TrackLocal {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
 	if p.simulcastTracks == nil {
@@ -338,14 +338,14 @@ func (p *LocalTrackPublication) setMuted(muted bool, byRemote bool) {
 	}
 }
 
-func (p *LocalTrackPublication) addSimulcastTrack(st *LocalTrack) {
+func (p *LocalTrackPublication) addSimulcastTrack(st TrackLocal) {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	if p.simulcastTracks == nil {
-		p.simulcastTracks = make(map[livekit.VideoQuality]*LocalTrack)
+		p.simulcastTracks = make(map[livekit.VideoQuality]TrackLocal)
 	}
 	if st != nil {
-		p.simulcastTracks[st.videoLayer.Quality] = st
+		p.simulcastTracks[st.VideoLayer().Quality] = st
 	}
 }
 
@@ -372,7 +372,9 @@ func (p *LocalTrackPublication) setSender(sender *webrtc.RTPSender, consumeRTCP 
 
 func (p *LocalTrackPublication) CloseTrack() {
 	for _, st := range p.simulcastTracks {
-		st.Close()
+		if localTrack, ok := st.(LocalTrackWithClose); ok {
+			localTrack.Close()
+		}
 	}
 
 	if localTrack, ok := p.track.(LocalTrackWithClose); ok {
