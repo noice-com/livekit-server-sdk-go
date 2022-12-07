@@ -225,7 +225,7 @@ type LocalTrackPublication struct {
 	trackPublicationBase
 	sender *webrtc.RTPSender
 	// set for simulcasted tracks
-	simulcastTracks map[livekit.VideoQuality]*LocalSampleTrack
+	simulcastTracks map[livekit.VideoQuality]TrackLocal
 	onRttUpdate     func(uint32)
 }
 
@@ -250,7 +250,7 @@ func (p *LocalTrackPublication) TrackLocal() webrtc.TrackLocal {
 	return nil
 }
 
-func (p *LocalTrackPublication) GetSimulcastTrack(quality livekit.VideoQuality) *LocalSampleTrack {
+func (p *LocalTrackPublication) GetSimulcastTrack(quality livekit.VideoQuality) TrackLocal {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
 	if p.simulcastTracks == nil {
@@ -266,14 +266,14 @@ func (p *LocalTrackPublication) SetMuted(muted bool) {
 	_ = p.client.SendMuteTrack(p.sid.Load(), muted)
 }
 
-func (p *LocalTrackPublication) addSimulcastTrack(st *LocalSampleTrack) {
+func (p *LocalTrackPublication) addSimulcastTrack(st TrackLocal) {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	if p.simulcastTracks == nil {
-		p.simulcastTracks = make(map[livekit.VideoQuality]*LocalSampleTrack)
+		p.simulcastTracks = make(map[livekit.VideoQuality]TrackLocal)
 	}
 	if st != nil {
-		p.simulcastTracks[st.videoLayer.Quality] = st
+		p.simulcastTracks[st.VideoLayer().Quality] = st
 	}
 }
 

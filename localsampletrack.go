@@ -129,6 +129,8 @@ func (s *LocalSampleTrack) StreamID() string { return s.rtpTrack.StreamID() }
 // Kind controls if this TrackLocal is audio or video
 func (s *LocalSampleTrack) Kind() webrtc.RTPCodecType { return s.rtpTrack.Kind() }
 
+func (s *LocalSampleTrack) VideoLayer() *livekit.VideoLayer { return s.videoLayer }
+
 // Codec gets the Codec of the track
 func (s *LocalSampleTrack) Codec() webrtc.RTPCodecCapability {
 	return s.rtpTrack.Codec()

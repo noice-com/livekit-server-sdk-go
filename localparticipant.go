@@ -106,7 +106,7 @@ func (p *LocalParticipant) PublishTrack(track webrtc.TrackLocal, opts *TrackPubl
 }
 
 // PublishSimulcastTrack publishes up to three layers to the server
-func (p *LocalParticipant) PublishSimulcastTrack(tracks []*LocalSampleTrack, opts *TrackPublicationOptions) (*LocalTrackPublication, error) {
+func (p *LocalParticipant) PublishSimulcastTrack(tracks []TrackLocal, opts *TrackPublicationOptions) (*LocalTrackPublication, error) {
 	if len(tracks) == 0 {
 		return nil, nil
 	}
@@ -115,14 +115,14 @@ func (p *LocalParticipant) PublishSimulcastTrack(tracks []*LocalSampleTrack, opt
 		if track.Kind() != webrtc.RTPCodecTypeVideo {
 			return nil, ErrUnsupportedSimulcastKind
 		}
-		if track.videoLayer == nil || track.RID() == "" {
+		if track.VideoLayer() == nil || track.RID() == "" {
 			return nil, ErrInvalidSimulcastTrack
 		}
 	}
 
 	// tracks should be low to high
 	sort.Slice(tracks, func(i, j int) bool {
-		return tracks[i].videoLayer.Width < tracks[j].videoLayer.Width
+		return tracks[i].VideoLayer().Width < tracks[j].VideoLayer().Width
 	})
 
 	if opts == nil {
@@ -139,7 +139,7 @@ func (p *LocalParticipant) PublishSimulcastTrack(tracks []*LocalSampleTrack, opt
 
 	var layers []*livekit.VideoLayer
 	for _, st := range tracks {
-		layers = append(layers, st.videoLayer)
+		layers = append(layers, st.VideoLayer())
 	}
 	err := p.engine.client.SendRequest(&livekit.SignalRequest{
 		Message: &livekit.SignalRequest_AddTrack{
@@ -148,8 +148,8 @@ func (p *LocalParticipant) PublishSimulcastTrack(tracks []*LocalSampleTrack, opt
 				Name:   opts.Name,
 				Source: opts.Source,
 				Type:   pub.Kind().ProtoType(),
-				Width:  mainTrack.videoLayer.Width,
-				Height: mainTrack.videoLayer.Height,
+				Width:  mainTrack.VideoLayer().Width,
+				Height: mainTrack.VideoLayer().Height,
 				Layers: layers,
 			},
 		},
