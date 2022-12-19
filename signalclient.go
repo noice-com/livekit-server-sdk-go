@@ -81,8 +81,9 @@ func (c *SignalClient) Join(urlPrefix string, token string, params *ConnectParam
 	}
 
 	header := newHeaderWithToken(token)
-	conn, _, err := websocket.DefaultDialer.Dial(u.String(), header)
+	conn, resp, err := websocket.DefaultDialer.Dial(u.String(), header)
 	if err != nil {
+		logger.Error(err, "failed to dial", "response", resp)
 		return nil, fmt.Errorf("%w dial error: %s", ErrSignalError, err.Error())
 	}
 	c.isClosed.Store(false)
