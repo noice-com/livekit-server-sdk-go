@@ -27,19 +27,20 @@ type SignalClient struct {
 	isStarted       atomic.Bool
 	pendingResponse *livekit.SignalResponse
 
-	OnClose                 func()
-	OnAnswer                func(sd webrtc.SessionDescription)
-	OnOffer                 func(sd webrtc.SessionDescription)
-	OnTrickle               func(init webrtc.ICECandidateInit, target livekit.SignalTarget)
-	OnParticipantUpdate     func([]*livekit.ParticipantInfo)
-	OnLocalTrackPublished   func(response *livekit.TrackPublishedResponse)
-	OnSpeakersChanged       func([]*livekit.SpeakerInfo)
-	OnConnectionQuality     func([]*livekit.ConnectionQualityInfo)
-	OnRoomUpdate            func(room *livekit.Room)
-	OnTrackMuted            func(request *livekit.MuteTrackRequest)
-	OnLocalTrackUnpublished func(response *livekit.TrackUnpublishedResponse)
-	OnTokenRefresh          func(refreshToken string)
-	OnLeave                 func(*livekit.LeaveRequest)
+	OnClose                    func()
+	OnAnswer                   func(sd webrtc.SessionDescription)
+	OnOffer                    func(sd webrtc.SessionDescription)
+	OnTrickle                  func(init webrtc.ICECandidateInit, target livekit.SignalTarget)
+	OnParticipantUpdate        func([]*livekit.ParticipantInfo)
+	OnLocalTrackPublished      func(response *livekit.TrackPublishedResponse)
+	OnSpeakersChanged          func([]*livekit.SpeakerInfo)
+	OnConnectionQuality        func([]*livekit.ConnectionQualityInfo)
+	OnRoomUpdate               func(room *livekit.Room)
+	OnTrackMuted               func(request *livekit.MuteTrackRequest)
+	OnLocalTrackUnpublished    func(response *livekit.TrackUnpublishedResponse)
+	OnTokenRefresh             func(refreshToken string)
+	OnLeave                    func(*livekit.LeaveRequest)
+	OnSubscribedQualityUpdated func(*livekit.SubscribedQualityUpdate)
 }
 
 func NewSignalClient() *SignalClient {
@@ -312,6 +313,11 @@ func (c *SignalClient) handleResponse(res *livekit.SignalResponse) {
 		if c.OnLocalTrackUnpublished != nil {
 			c.OnLocalTrackUnpublished(msg.TrackUnpublished)
 		}
+	case *livekit.SignalResponse_SubscribedQualityUpdate:
+		if c.OnSubscribedQualityUpdated != nil {
+			c.OnSubscribedQualityUpdated(msg.SubscribedQualityUpdate)
+		}
+
 	}
 }
 
