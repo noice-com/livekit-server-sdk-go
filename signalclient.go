@@ -55,6 +55,8 @@ type SignalClient struct {
 	OnLocalTrackUnpublished func(response *livekit.TrackUnpublishedResponse)
 	OnTokenRefresh          func(refreshToken string)
 	OnLeave                 func(*livekit.LeaveRequest)
+
+	OnSubscribedQualityUpdated func(*livekit.SubscribedQualityUpdate)
 }
 
 func NewSignalClient() *SignalClient {
@@ -345,6 +347,11 @@ func (c *SignalClient) handleResponse(res *livekit.SignalResponse) {
 		if c.OnLocalTrackUnpublished != nil {
 			c.OnLocalTrackUnpublished(msg.TrackUnpublished)
 		}
+	case *livekit.SignalResponse_SubscribedQualityUpdate:
+		if c.OnSubscribedQualityUpdated != nil {
+			c.OnSubscribedQualityUpdated(msg.SubscribedQualityUpdate)
+		}
+
 	}
 }
 
