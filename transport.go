@@ -117,7 +117,7 @@ func NewPCTransport(params PCTransportParams) (*PCTransport, error) {
 		return nil, err
 	}
 
-	i.Add(sdkinterceptor.NewLimitSizeInterceptorFactory())
+	// i.Add(sdkinterceptor.NewLimitSizeInterceptorFactory())
 
 	se := webrtc.SettingEngine{}
 	se.SetSRTPProtectionProfiles(dtls.SRTP_AEAD_AES_128_GCM, dtls.SRTP_AES128_CM_HMAC_SHA1_80)
