@@ -110,7 +110,7 @@ func (t *PCTransport) registerDefaultInterceptors(params PCTransportParams, i *i
 	}
 	i.Add(twccGenerator)
 
-	i.Add(sdkinterceptor.NewLimitSizeInterceptorFactory())
+	// i.Add(sdkinterceptor.NewLimitSizeInterceptorFactory())
 
 	if params.OnRTTUpdate != nil {
 		i.Add(sdkinterceptor.NewRTTInterceptorFactory(t.handleRTTUpdate))
