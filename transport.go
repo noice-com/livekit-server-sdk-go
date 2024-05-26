@@ -124,7 +124,7 @@ func NewPCTransport(params PCTransportParams) (*PCTransport, error) {
 		return nil, err
 	}
 
-	i.Add(sdkinterceptor.NewLimitSizeInterceptorFactory())
+	// i.Add(sdkinterceptor.NewLimitSizeInterceptorFactory())
 
 	if params.OnRTTUpdate != nil {
 		i.Add(sdkinterceptor.NewRTTInterceptorFactory(t.handleRTTUpdate))
