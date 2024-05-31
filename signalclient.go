@@ -159,8 +159,18 @@ func (c *SignalClient) connectContext(ctx context.Context, urlPrefix string, tok
 		return nil, err
 	}
 
+	httpClient := http.DefaultClient
+	if params.HttpClient != nil {
+		httpClient = params.HttpClient
+	}
+
 	header := newHeaderWithToken(token)
-	conn, hresp, err := websocket.DefaultDialer.DialContext(ctx, u.String(), header)
+	dialer := websocket.DefaultDialer
+	if params.WebsocketDialer != nil {
+		dialer = params.WebsocketDialer
+	}
+
+	conn, hresp, err := dialer.DialContext(ctx, u.String(), header)
 	if err != nil {
 		var fields []interface{}
 		if hresp != nil {
@@ -181,7 +191,7 @@ func (c *SignalClient) connectContext(ctx context.Context, urlPrefix string, tok
 			return nil, ErrCannotDialSignal
 		}
 		validateReq.Header = header
-		hresp, err := http.DefaultClient.Do(validateReq)
+		hresp, err := httpClient.Do(validateReq)
 		if err != nil {
 			c.log.Errorw("error getting validation", err, "httpResponse", hresp)
 			return nil, ErrCannotDialSignal
