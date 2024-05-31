@@ -20,6 +20,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/gorilla/websocket"
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v3"
 	"github.com/thoas/go-funk"
@@ -81,6 +82,8 @@ type ConnectParams struct {
 	RetransmitBufferSize uint16
 
 	Pacer pacer.Factory
+
+	Dialer *websocket.Dialer
 }
 
 type ConnectOption func(*ConnectParams)
@@ -102,6 +105,12 @@ func WithRetransmitBufferSize(val uint16) ConnectOption {
 func WithPacer(pacer pacer.Factory) ConnectOption {
 	return func(p *ConnectParams) {
 		p.Pacer = pacer
+	}
+}
+
+func WithDialer(dialer *websocket.Dialer) ConnectOption {
+	return func(p *ConnectParams) {
+		p.Dialer = dialer
 	}
 }
 
