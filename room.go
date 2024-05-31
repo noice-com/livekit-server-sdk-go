@@ -16,12 +16,14 @@ package lksdk
 
 import (
 	"context"
+	"net/http"
 	"reflect"
 	"sort"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/pion/interceptor"
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v4"
@@ -102,6 +104,9 @@ type SignalClientConnectParams struct {
 	Interceptors []interceptor.Factory
 
 	ICETransportPolicy webrtc.ICETransportPolicy
+
+	WebsocketDialer *websocket.Dialer
+	HttpClient      *http.Client
 }
 
 type ConnectOption func(*SignalClientConnectParams)
@@ -143,6 +148,18 @@ func WithICETransportPolicy(iceTransportPolicy webrtc.ICETransportPolicy) Connec
 func WithDisableRegionDiscovery() ConnectOption {
 	return func(p *SignalClientConnectParams) {
 		p.DisableRegionDiscovery = true
+	}
+}
+
+func WithWebsocketDialer(dialer *websocket.Dialer) ConnectOption {
+	return func(p *SignalClientConnectParams) {
+		p.WebsocketDialer = dialer
+	}
+}
+
+func WithHttpClient(client *http.Client) ConnectOption {
+	return func(p *SignalClientConnectParams) {
+		p.HttpClient = client
 	}
 }
 
