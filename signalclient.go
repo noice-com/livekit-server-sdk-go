@@ -98,10 +98,15 @@ func (c *SignalClient) Join(urlPrefix string, token string, params *ConnectParam
 		return nil, err
 	}
 
+	httpClient := http.DefaultClient
+	if params.HttpClient != nil {
+		httpClient = params.HttpClient
+	}
+
 	header := newHeaderWithToken(token)
 	dialer := websocket.DefaultDialer
-	if params.Dialer != nil {
-		dialer = params.Dialer
+	if params.WebsocketDialer != nil {
+		dialer = params.WebsocketDialer
 	}
 
 	conn, hresp, err := dialer.Dial(u.String(), header)
@@ -125,7 +130,7 @@ func (c *SignalClient) Join(urlPrefix string, token string, params *ConnectParam
 			return nil, ErrCannotDialSignal
 		}
 		validateReq.Header = header
-		hresp, err := http.DefaultClient.Do(validateReq)
+		hresp, err := httpClient.Do(validateReq)
 		if err != nil {
 			logger.Errorw("error getting validation", err, "httpResponse", hresp)
 			return nil, ErrCannotDialSignal
