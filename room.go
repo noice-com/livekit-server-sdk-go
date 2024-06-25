@@ -15,6 +15,7 @@
 package lksdk
 
 import (
+	"net/http"
 	"reflect"
 	"sort"
 	"strings"
@@ -83,7 +84,8 @@ type ConnectParams struct {
 
 	Pacer pacer.Factory
 
-	Dialer *websocket.Dialer
+	WebsocketDialer *websocket.Dialer
+	HttpClient      *http.Client
 }
 
 type ConnectOption func(*ConnectParams)
@@ -108,9 +110,15 @@ func WithPacer(pacer pacer.Factory) ConnectOption {
 	}
 }
 
-func WithDialer(dialer *websocket.Dialer) ConnectOption {
+func WithWebsocketDialer(dialer *websocket.Dialer) ConnectOption {
 	return func(p *ConnectParams) {
-		p.Dialer = dialer
+		p.WebsocketDialer = dialer
+	}
+}
+
+func WithHttpClient(client *http.Client) ConnectOption {
+	return func(p *ConnectParams) {
+		p.HttpClient = client
 	}
 }
 
