@@ -489,7 +489,11 @@ func (e *RTCEngine) handleDisconnect(fullReconnect bool) {
 }
 
 func (e *RTCEngine) resumeConnection() error {
-	_, err := e.client.Join(e.url, e.token.Load(), &ConnectParams{Reconnect: true})
+	_, err := e.client.Join(e.url, e.token.Load(), &ConnectParams{
+		Reconnect:       true,
+		HttpClient:      e.connParams.HttpClient,
+		WebsocketDialer: e.connParams.WebsocketDialer,
+	})
 	if err != nil {
 		return err
 	}
