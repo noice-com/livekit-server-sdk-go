@@ -132,6 +132,7 @@ const (
 	RoomClosed         DisconnectionReason = "room closed"
 	ParticipantRemoved DisconnectionReason = "removed by server"
 	DuplicateIdentity  DisconnectionReason = "duplicate identity"
+	RoomDeleted        DisconnectionReason = "room deleted"
 	OtherReason        DisconnectionReason = "other reasons"
 )
 
@@ -153,7 +154,10 @@ func GetDisconnectionReason(reason livekit.DisconnectReason) DisconnectionReason
 		r = DuplicateIdentity
 	case livekit.DisconnectReason_JOIN_FAILURE, livekit.DisconnectReason_SIGNAL_CLOSE, livekit.DisconnectReason_STATE_MISMATCH:
 		r = Failed
+	case livekit.DisconnectReason_ROOM_DELETED:
+		r = RoomDeleted
 	}
+
 	return r
 }
 
